@@ -1,9 +1,9 @@
-package project1;
+package project1.buffer;
+
+import project1.utils.Tuple;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class InputBuffer extends Buffer {
     private int index = 0;

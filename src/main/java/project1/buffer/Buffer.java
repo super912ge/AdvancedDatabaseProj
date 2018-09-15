@@ -1,4 +1,6 @@
-package project1;
+package project1.buffer;
+
+import project1.utils.Tuple;
 
 import java.io.*;
 import java.util.Arrays;
@@ -13,6 +15,14 @@ public class Buffer implements Serializable {
 
     public Buffer(long size){
         this.buffer = new Tuple[(int)size];
+    }
+
+    public int getSize() {
+        return size;
+    }
+
+    public Tuple[] getBuffer() {
+        return buffer;
     }
 
     public boolean isFull(){

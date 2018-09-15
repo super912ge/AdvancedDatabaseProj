@@ -1,5 +1,11 @@
 package project1;
 
+import project1.buffer.Buffer;
+import project1.buffer.InputBuffer;
+import project1.buffer.OutputBuffer;
+import project1.utils.Config;
+import project1.utils.Tuple;
+
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -17,23 +23,31 @@ public class MergeSort {
 
 
     public Integer Merge(List<InputBuffer> buffers, OutputBuffer outputBuffer) throws IOException {
+        for(InputBuffer inputBuffer: buffers)
+            inputBuffer.fillBuffer();
+
         while(true){
             Tuple smallest = Tuple.getLargestValue();
-            for(InputBuffer inputBuffer : buffers){
-                if(inputBuffer.getIndex() < inputBuffer.size){
-                    if(inputBuffer.buffer[inputBuffer.getIndex()].compareTo(smallest) <= 0){
-                        smallest = inputBuffer.buffer[inputBuffer.getIndex()];
-                        inputBuffer.setIndex(inputBuffer.getIndex()+1);
+            InputBuffer whichBuffer = null;
+
+            for(InputBuffer buffer : buffers){
+                if(buffer.getIndex() < buffer.getSize()){
+                    if(buffer.getBuffer()[buffer.getIndex()].compareTo(smallest) <= 0){
+                        smallest = buffer.getBuffer()[buffer.getIndex()];
+                        whichBuffer = buffer;
                     }
                 }
             }
 
-            if(smallest == Tuple.getLargestValue())
+            if(whichBuffer == null)
                 break;
             outputBuffer.append(smallest);
+            whichBuffer.setIndex(whichBuffer.getIndex()+1);
+            if(whichBuffer.getIndex() == whichBuffer.getSize())
+                whichBuffer.fillBuffer();
         }
 
-        if(outputBuffer.size > 0){
+        if(outputBuffer.getSize() > 0){
             outputBuffer.writeBufferToFile();
             outputBuffer.reset();
         }
@@ -90,18 +104,15 @@ public class MergeSort {
                 currentInputBuff.setBufferedReader(new BufferedReader(new InputStreamReader(fileInputStream)));
             }
 
-            for(InputBuffer inputBuffer : inputBuffers){
-                if(inputBuffer.isReady()){
-                    inputBuffer.fillBuffer();
-                    inputBuffer.closeBufferedReader();
-                    inputBuffer.setBufferedReader(null);
-                }
-            }
-
-            List<InputBuffer> validInputBuffers = inputBuffers.stream().filter(inputBuffer -> inputBuffer.size > 0).collect(Collectors.toList());
+            List<InputBuffer> validInputBuffers = inputBuffers.stream().filter(inputBuffer -> inputBuffer.isReady()).collect(Collectors.toList());
             Integer outputDocID  = Merge(validInputBuffers, outputBuffer);
             outputDocIDs.add(outputDocID);
             outputBuffer.startNextFile();
+
+            for(InputBuffer inputBuffer: validInputBuffers){
+                inputBuffer.closeBufferedReader();
+                inputBuffer.setBufferedReader(null);
+            }
         }
 
         return outputDocIDs;

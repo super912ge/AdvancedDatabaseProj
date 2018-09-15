@@ -1,4 +1,7 @@
-package project1;
+package project1.buffer;
+
+import project1.utils.Config;
+import project1.utils.Tuple;
 
 import java.io.*;
 

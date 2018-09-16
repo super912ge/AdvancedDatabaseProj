@@ -62,7 +62,7 @@ public class MergeSort {
         ArrayList<Integer> outputDocIDSet = new ArrayList<>();
 
         String line;
-        Buffer buffer = new Buffer(config.getTotalBuffSize()/12);         // 4M memory use
+        Buffer buffer = new Buffer(config.getTotalBuffSize()/Config.OBJECT_SIZE);         // 4M memory use
         while((line = bufferedReader.readLine()) != null){
             String substring[] = line.split(" ");
             Tuple tuple = new Tuple(Integer.parseInt(substring[0]), Integer.parseInt(substring[1]),Integer.parseInt(substring[2]));
@@ -90,10 +90,10 @@ public class MergeSort {
 
 
     private List<Integer> pass(List<Integer> inputDocIDs) throws IOException {
-        OutputBuffer outputBuffer = new OutputBuffer(config.getOutputBufferSize()/12);
+        OutputBuffer outputBuffer = new OutputBuffer(config.getOutputBufferSize()/Config.OBJECT_SIZE);
         ArrayList<InputBuffer> inputBuffers = new ArrayList<>();
         for(int i=0; i<config.getInputBufferCnt(); i++)
-            inputBuffers.add(new InputBuffer(config.getInputBufferSize()/12));         // each input buffer takes 1M memory
+            inputBuffers.add(new InputBuffer(config.getInputBufferSize()/Config.OBJECT_SIZE));         // each input buffer takes 1M memory
 
         List<Integer> outputDocIDs = new ArrayList<>();
         for(int i=0; i<inputDocIDs.size(); i+=inputBuffers.size()){
@@ -120,8 +120,8 @@ public class MergeSort {
 
 
     public static void main(String[] args) throws IOException {
-        String fname = "dataset/test1000.txt";
-        int sizeOfTuple = 12;
+        String fname = "dataset/test1000000.txt";
+        int sizeOfTuple = Config.OBJECT_SIZE;
 
         FileInputStream fis = new FileInputStream(fname);
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fis));

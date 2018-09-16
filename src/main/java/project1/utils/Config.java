@@ -2,8 +2,9 @@ package project1.utils;
 
 public class Config {
     public static String fname_format = "dataset/output_%d.txt";
+    public static int OBJECT_SIZE = 20;
     private static int outDocID = 0;
-    private static final int RESERVED_SIZE = 512*1024;   // 1M memery for temporary variable
+    private static final int RESERVED_SIZE = 3*1024*1024;   // 1M memery for temporary variable
 
     private long memoery_size;
     private long reserve_size;

@@ -93,7 +93,7 @@ public class MergeSort {
         OutputBuffer outputBuffer = new OutputBuffer(config.getOutputBufferSize()/Config.OBJECT_SIZE);
         ArrayList<InputBuffer> inputBuffers = new ArrayList<>();
         for(int i=0; i<config.getInputBufferCnt(); i++)
-            inputBuffers.add(new InputBuffer(config.getInputBufferSize()/Config.OBJECT_SIZE));         // each input buffer takes 1M memory
+            inputBuffers.add(new InputBuffer(config.getInputBufferSize()/Config.OBJECT_SIZE));
 
         List<Integer> outputDocIDs = new ArrayList<>();
         for(int i=0; i<inputDocIDs.size(); i+=inputBuffers.size()){
@@ -131,8 +131,10 @@ public class MergeSort {
         String memorySize = firstLine[1];
         bufferedReader.readLine();      // empty line
 
+        long startTime  = System.nanoTime();
+
         // Configuration for input buffers and output buffers
-        Config config = Config.getRecommendedConfig(numOfTuples*sizeOfTuple, memorySize, 3, 1);   // will be used in future
+        Config config = Config.getRecommendedConfig(numOfTuples*sizeOfTuple, memorySize, 3, 1);
         MergeSort mergeSort = new MergeSort(config);
 
         // Phase 1
@@ -142,7 +144,10 @@ public class MergeSort {
         while(outputDocIDs.size() > 1)
             outputDocIDs = mergeSort.pass(outputDocIDs);
 
-        System.out.println(String.format("The final input is in output_%d.txt file", outputDocIDs.get(0)) );
+        long endTime = System.nanoTime();
+
+        System.out.println(String.format("The final input is in output_%d.txt file", outputDocIDs.get(0)));
+        System.out.println("Cost of merge sort: " + (endTime-startTime)/1000000 + "ms");
     }
 
 

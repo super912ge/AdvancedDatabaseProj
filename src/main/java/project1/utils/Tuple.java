@@ -2,56 +2,35 @@ package project1.utils;
 
 import java.io.Serializable;
 
-public class Tuple implements Serializable, Comparable<Tuple> {
-    private int first;
-    private int second;
-    private int third;
+public class Tuple implements  Comparable<Tuple> {
+    private int key;
 
-    public Tuple(int first, int second, int third) {
-        this.first = first;
-        this.second = second;
-        this.third = third;
+    public Tuple(int key) {
+        this.key = key;
     }
 
-    public int getFirst() {
-        return first;
+    public int getKey() {
+        return key;
     }
 
-    public int getSecond() {
-        return second;
+    public void setKey(int key) {
+        this.key = key;
     }
-
-    public int getThird() {
-        return third;
-    }
-
 
     @Override
     public int compareTo(Tuple o) {
         if(o == this)
             return 0;
 
-        if(this.first > o.first)
+        if(this.key > o.key)
             return 1;
-        else if(this.first < o.first)
+        else if(this.key < o.key)
             return -1;
-        else{
-            if(this.second > o.second)
-                return 1;
-            else if(this.second < o.second)
-                return -1;
-            else{
-                if(this.third > o.third )
-                    return 1;
-                else if(this.third < o.third)
-                    return -1;
-                else
-                    return 0;
-            }
-        }
+        else
+            return 0;
     }
 
-    static private Tuple largestTuple = new Tuple(Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE);
+    static private Tuple largestTuple = new Tuple(Integer.MAX_VALUE);
     static public Tuple getLargestValue(){
         return largestTuple;
     }

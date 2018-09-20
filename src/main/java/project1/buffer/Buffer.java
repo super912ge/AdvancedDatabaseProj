@@ -63,7 +63,7 @@ public class Buffer implements Serializable {
         PrintWriter printWriter = new PrintWriter(bf);
 
         for(int i=0; i<size; i++)
-            printWriter.println(String.format("%d %d %d", buffer[i].getFirst(), buffer[i].getSecond(), buffer[i].getThird()));
+            printWriter.println(String.format("%d", buffer[i].getKey()));
         printWriter.close();
     }
 }

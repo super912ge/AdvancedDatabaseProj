@@ -5,11 +5,9 @@ import project1.buffer.InputBuffer;
 import project1.buffer.OutputBuffer;
 import project1.utils.Config;
 import project1.utils.Tuple;
+import project1.utils.WordReader;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -58,14 +56,13 @@ public class MergeSort {
     }
 
 
-    private ArrayList<Integer> phase1(BufferedReader bufferedReader) throws IOException {
+    private ArrayList<Integer> phase1(WordReader wordReader) throws IOException {
         ArrayList<Integer> outputDocIDSet = new ArrayList<>();
 
-        String line;
-        Buffer buffer = new Buffer(config.getTotalBuffSize()/Config.OBJECT_SIZE);         // 4M memory use
-        while((line = bufferedReader.readLine()) != null){
-            String substring[] = line.split(" ");
-            Tuple tuple = new Tuple(Integer.parseInt(substring[0]), Integer.parseInt(substring[1]),Integer.parseInt(substring[2]));
+        String word;
+        Buffer buffer = new Buffer(config.getTotalBuffSize()/Config.OBJECT_SIZE);
+        while((word = wordReader.nextWord()) != null){
+            Tuple tuple = new Tuple(Integer.parseInt(word));
 
             if(buffer.isFull()){
                 buffer.sort();
@@ -75,14 +72,15 @@ public class MergeSort {
             }
             buffer.append(tuple);
         }
+
+        // write the last group of tuples into disk
+        // buff may not be full
         if(!buffer.isEmpty()){
             buffer.sort();
             outputDocIDSet.add(config.getOutDocID());
             buffer.writeBufferToFile(String.format(Config.fname_format, config.getAndIncrementOutDocID()));
         }
-        bufferedReader.close();
-
-        buffer = null;
+        wordReader.close();
         System.gc();        // do garbage collection for unused memory
 
         return outputDocIDSet;
@@ -97,15 +95,17 @@ public class MergeSort {
 
         List<Integer> outputDocIDs = new ArrayList<>();
         for(int i=0; i<inputDocIDs.size(); i+=inputBuffers.size()){
+            // each iteration merge items from N input buffers
+
+            // initialize input buffer
             for(int j=0; j<inputBuffers.size() && i+j<inputDocIDs.size(); j++){
                 InputBuffer currentInputBuff = inputBuffers.get(j);
 
-                FileInputStream fileInputStream = new FileInputStream(String.format(Config.fname_format, inputDocIDs.get(i+j)));
-                currentInputBuff.setBufferedReader(new BufferedReader(new InputStreamReader(fileInputStream)));
+                currentInputBuff.setBufferedReader(new WordReader(String.format(Config.fname_format, inputDocIDs.get(i+j))));
             }
 
             List<InputBuffer> validInputBuffers = inputBuffers.stream().filter(inputBuffer -> inputBuffer.isReady()).collect(Collectors.toList());
-            Integer outputDocID  = Merge(validInputBuffers, outputBuffer);
+            Integer outputDocID  = Merge(validInputBuffers, outputBuffer);      // merge tuples from input buffer to output buffer
             outputDocIDs.add(outputDocID);
             outputBuffer.startNextFile();
 
@@ -121,24 +121,20 @@ public class MergeSort {
 
     public static void main(String[] args) throws IOException {
         String fname = "dataset/test1000000.txt";
-        int sizeOfTuple = Config.OBJECT_SIZE;
 
-        FileInputStream fis = new FileInputStream(fname);
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fis));
+        WordReader wordReader = new WordReader(fname);
 
-        String[] firstLine =  bufferedReader.readLine().split(" ");
-        int numOfTuples = Integer.parseInt(firstLine[0]);
-        String memorySize = firstLine[1];
-        bufferedReader.readLine();      // empty line
+        int numOfTuples = Integer.parseInt(wordReader.nextWord());
+        String memorySize = wordReader.nextWord();
 
         long startTime  = System.nanoTime();
 
         // Configuration for input buffers and output buffers
-        Config config = Config.getRecommendedConfig(numOfTuples*sizeOfTuple, memorySize, 3, 1);
+        Config config = Config.getRecommendedConfig(numOfTuples*Config.OBJECT_SIZE, memorySize, 3, 1);
         MergeSort mergeSort = new MergeSort(config);
 
         // Phase 1
-        List<Integer> outputDocIDs = mergeSort.phase1(bufferedReader);
+        List<Integer> outputDocIDs = mergeSort.phase1(wordReader);
 
         // Phase 2
         while(outputDocIDs.size() > 1)

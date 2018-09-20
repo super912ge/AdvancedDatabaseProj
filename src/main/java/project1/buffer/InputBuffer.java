@@ -1,44 +1,43 @@
 package project1.buffer;
 
 import project1.utils.Tuple;
+import project1.utils.WordReader;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 
 public class InputBuffer extends Buffer {
     private int index = 0;
 
-    private BufferedReader bufferedReader;
+    private WordReader wordReader;
 
     public InputBuffer(long size){
         super(size);
     }
 
-    public void setBufferedReader(BufferedReader bufferedReader) throws IOException {
-        this.bufferedReader = bufferedReader;
+    public void setBufferedReader(WordReader wordReader) throws IOException {
+        this.wordReader = wordReader;
     }
 
     public boolean isReady(){
-        if(bufferedReader == null)
+        if(wordReader == null)
             return false;
         else
             return true;
     }
 
 
-    public void fillBuffer() throws IOException {
+    public void fillBuffer() {
         index = 0;
 
+        String word;
         for(size=0; size<buffer.length; size++){
-            String line = bufferedReader.readLine();
-            if(line == null)
-                return;
-
-            String[] substring = line.split(" ");
-
-            Tuple tuple = new Tuple(Integer.parseInt(substring[0]), Integer.parseInt(substring[1]), Integer.parseInt(substring[2]));
-            buffer[size] = tuple;
+             word = wordReader.nextWord();
+             if(word == null)
+                 return;
+             Tuple tuple = new Tuple(Integer.parseInt(word));
+             buffer[size] = tuple;
         }
+
     }
 
     public void reset(){
@@ -47,8 +46,8 @@ public class InputBuffer extends Buffer {
     }
 
     public void closeBufferedReader() throws IOException {
-        if(this.bufferedReader != null)
-            this.bufferedReader.close();
+        if(this.wordReader != null)
+            this.wordReader.close();
     }
 
     public int getIndex() {

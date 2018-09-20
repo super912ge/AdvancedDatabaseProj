@@ -2,9 +2,9 @@ package project1.utils;
 
 public class Config {
     public static String fname_format = "tmp/output_%d.txt";
-    public static int OBJECT_SIZE = 10;
+    public static int OBJECT_SIZE = 4;
     private static int outDocID = 0;
-    private static final int RESERVED_SIZE = 4*1024*1024;   // 3M memery for temporary variable
+    private static final int RESERVED_SIZE = 4*1024*1024;   // reserved memory bor  temporary usage
 
     private long memoery_size;
     private long reserve_size;

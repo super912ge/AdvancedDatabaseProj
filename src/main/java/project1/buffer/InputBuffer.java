@@ -1,6 +1,5 @@
 package project1.buffer;
 
-import project1.utils.Tuple;
 import project1.utils.WordReader;
 
 import java.io.IOException;
@@ -34,7 +33,7 @@ public class InputBuffer extends Buffer {
              word = wordReader.nextWord();
              if(word == null)
                  return;
-             Tuple tuple = new Tuple(Integer.parseInt(word));
+             int tuple = Integer.parseInt(word);
              buffer[size] = tuple;
         }
 
@@ -45,7 +44,7 @@ public class InputBuffer extends Buffer {
         index = 0;
     }
 
-    public void closeBufferedReader() throws IOException {
+    public void closeBufferedReader() {
         if(this.wordReader != null)
             this.wordReader.close();
     }

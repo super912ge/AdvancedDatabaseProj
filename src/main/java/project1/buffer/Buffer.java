@@ -1,27 +1,25 @@
 package project1.buffer;
 
-import project1.utils.Tuple;
-
 import java.io.*;
 import java.util.Arrays;
 
 public class Buffer implements Serializable {
     protected int size = 0;
-    protected Tuple[] buffer;
+    protected int[] buffer;
 
-    public Buffer(Tuple[] buffer) {
+    public Buffer(int[] buffer) {
         this.buffer = buffer;
     }
 
     public Buffer(long size){
-        this.buffer = new Tuple[(int)size];
+        this.buffer = new int[(int)size];
     }
 
     public int getSize() {
         return size;
     }
 
-    public Tuple[] getBuffer() {
+    public int[] getBuffer() {
         return buffer;
     }
 
@@ -39,7 +37,7 @@ public class Buffer implements Serializable {
             return true;
     }
 
-    public boolean append(Tuple value) {
+    public boolean append(int value) {
         if(size < buffer.length){
             buffer[size++] = value;
             return true;
@@ -63,7 +61,7 @@ public class Buffer implements Serializable {
         PrintWriter printWriter = new PrintWriter(bf);
 
         for(int i=0; i<size; i++)
-            printWriter.println(String.format("%d", buffer[i].getKey()));
+            printWriter.println(String.format("%d", buffer[i]));
         printWriter.close();
     }
 }

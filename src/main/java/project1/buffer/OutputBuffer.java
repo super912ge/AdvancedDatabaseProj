@@ -1,7 +1,6 @@
 package project1.buffer;
 
 import project1.utils.Config;
-import project1.utils.Tuple;
 
 import java.io.*;
 
@@ -13,7 +12,7 @@ public class OutputBuffer extends Buffer implements Serializable {
         current_OutputDocID = Config.getAndIncrementOutDocID();
     }
 
-    public boolean append(Tuple value) {
+    public boolean append(int value) {
         try{
             if(size == buffer.length){
                 writeBufferToFile();
@@ -35,7 +34,7 @@ public class OutputBuffer extends Buffer implements Serializable {
         PrintWriter printWriter = new PrintWriter(bf);
 
         for(int i=0; i<size; i++)
-            printWriter.println(String.format("%d", buffer[i].getKey()));
+            printWriter.println(String.format("%d", buffer[i]));
         printWriter.close();
     }
 

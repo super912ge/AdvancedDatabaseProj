@@ -4,7 +4,6 @@ import project1.buffer.Buffer;
 import project1.buffer.InputBuffer;
 import project1.buffer.OutputBuffer;
 import project1.utils.Config;
-import project1.utils.Tuple;
 import project1.utils.WordReader;
 
 import java.io.IOException;
@@ -25,12 +24,12 @@ public class MergeSort {
             inputBuffer.fillBuffer();
 
         while(true){
-            Tuple smallest = Tuple.getLargestValue();
+            int smallest = Integer.MAX_VALUE;
             InputBuffer whichBuffer = null;
 
             for(InputBuffer buffer : buffers){
                 if(buffer.getIndex() < buffer.getSize()){
-                    if(buffer.getBuffer()[buffer.getIndex()].compareTo(smallest) <= 0){
+                    if(buffer.getBuffer()[buffer.getIndex()] <= smallest){
                         smallest = buffer.getBuffer()[buffer.getIndex()];
                         whichBuffer = buffer;
                     }
@@ -62,7 +61,7 @@ public class MergeSort {
         String word;
         Buffer buffer = new Buffer(config.getTotalBuffSize()/Config.OBJECT_SIZE);
         while((word = wordReader.nextWord()) != null){
-            Tuple tuple = new Tuple(Integer.parseInt(word));
+            int tuple =  Integer.parseInt(word);
 
             if(buffer.isFull()){
                 buffer.sort();

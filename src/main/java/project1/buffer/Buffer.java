@@ -4,7 +4,9 @@ import java.io.*;
 import java.util.Arrays;
 
 public class Buffer implements Serializable {
+
     protected int size = 0;
+
     protected int[] buffer;
 
     public Buffer(int[] buffer) {

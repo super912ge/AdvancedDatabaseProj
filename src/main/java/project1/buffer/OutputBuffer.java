@@ -5,14 +5,18 @@ import project1.utils.Config;
 import java.io.*;
 
 public class OutputBuffer extends Buffer implements Serializable {
+
     private int current_OutputDocID;
+
     public OutputBuffer(long size) {
+
         super(size);
 
         current_OutputDocID = Config.getAndIncrementOutDocID();
     }
 
     public boolean append(int value) {
+
         try{
             if(size == buffer.length){
                 writeBufferToFile();
@@ -20,9 +24,13 @@ public class OutputBuffer extends Buffer implements Serializable {
             }
 
             buffer[size++] = value;
+
             return true;
+
         }catch (IOException ex){
-            System.out.println(ex.getCause());
+
+            ex.printStackTrace();
+
             return false;
         }
     }
